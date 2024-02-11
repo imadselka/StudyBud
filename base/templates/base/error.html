@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    {% extends 'main.html' %} {% block content %}
+    <h3>Room, User name, Description was not found..</h3>
+    <h4>Try Searching with another name.</h4>
+    <a href="{% url 'home' %}">Go Back</a>
+    {% endblock %}
+  </body>
+</html>
