@@ -17,9 +17,7 @@ class Room(models.Model):
     name = models.CharField(max_length=200)
     descripton = models.TextField(null=True, blank=True)
     # participants = models.ManyToManyField(User, blank=True)
-    # auto_now = True -> update time when the record is updated (every time)
     updated = models.DateTimeField(auto_now=True)
-    # auto_now_add = True -> update time when the record is created (only once)
     created = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
