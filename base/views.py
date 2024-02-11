@@ -1,5 +1,4 @@
 from django.shortcuts import render
-from base.constants.constants import rooms
 from .models import Room
 
 
