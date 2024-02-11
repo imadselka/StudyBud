@@ -14,7 +14,9 @@ def home(request):
     if not rooms.exists():
         return render(request, "base/error.html")
 
-    context = {"rooms": rooms, "topics": topics}
+    room_count = rooms.count()
+
+    context = {"rooms": rooms, "topics": topics, "room_count": room_count}
     return render(request, "base/home.html", context)
 
 
