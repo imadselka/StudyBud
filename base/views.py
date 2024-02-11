@@ -48,6 +48,6 @@ def deleteRoom(request, pk):
     if request.method == "POST":
         room.delete()
         return redirect("home")
-
-    context = {"room": room}
+    # obj is the object to be deleted we use obj in html file
+    context = {"obj": room}
     return render(request, "base/delete.html", context)
