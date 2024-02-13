@@ -6,7 +6,7 @@
     <title>Document</title>
   </head>
   <body>
-    {% extends 'main.html'%} {% block content %}
+    {% extends 'main.html'%} {% block content %} {% if page == 'login' %}
     <div>
       <form action="" method="POST">
         {% csrf_token %}
@@ -19,8 +19,19 @@
           placeholder="enter password here"
         />
         <button type="submit">Login</button>
+        <p>Dont have an account yet?</p>
+        <a href="{% url 'register' %}">Sign Up</a>
       </form>
     </div>
-    {% endblock %}
+    {% else %}
+    <div>
+      <form action="" method="POST">
+        {% csrf_token %} {{form.as_p}}
+        <button type="submit">Register</button>
+        <p>Already have an account?</p>
+        <a href="{% url 'login' %}">Login</a>
+      </form>
+    </div>
+    {% endif %} {% endblock %}
   </body>
 </html>
