@@ -1,12 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
+from .models import Room, Topic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
 from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.forms import UserCreationForm
-from .models import Room, Topic
 from .forms import RoomForm
 
 
@@ -73,10 +73,17 @@ def home(request):
     return render(request, "base/home.html", context)
 
 
+from .models import Message  # Import the Message model
+
+
 def room(request, pk):
     room = Room.objects.get(id=pk)
+    print("Room object:", room)
+    print("Attributes:", dir(room))  # Print all attributes of the room object
+    room_messages = room.message_set.all().order_by("-created")
     context = {
         "room": room,
+        "room_messages": room_messages,
     }
     return render(request, "base/room.html", context)
 
