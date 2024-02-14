@@ -5,14 +5,22 @@
 <p>{{room.description}}</p>
 
 <div class="comment-wrapper">
-  <h3>Coversation</h3>
+  <h3>Conversation</h3>
   <hr />
   {% for message in room_messages %}
   <div>
     <small> @{{ message.user }} {{ message.created|timesince }} ago </small>
-    <p>{{ message.content }}</p>
+    <p>{{ message.body }}</p>
     <hr />
   </div>
-  {% endfor %}
+  {% endfor %} {% if user.is_authenticated %}
+  <div class="comment-form">
+    <form method="POST" action="">
+      {% csrf_token %}
+      <small> @{{ user.username }} </small>
+      <input type="text" name="body" placeholder="write your message here" />
+    </form>
+  </div>
+  {%endif%}
 </div>
 {% endblock %}
