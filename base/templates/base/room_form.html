@@ -1,11 +1,17 @@
 <!DOCTYPE html>
-
 {% extends 'main.html' %} {% block content %}
 <div>
   <form action="" method="POST">
-    {% csrf_token %} {{ form.as_p }}
+    {% csrf_token %} {{ form.as_p }} {% if is_creating_room %}
     <br />
     <input type="submit" value="Create Room" />
+    {% elif is_updating_message %}
+    <br />
+    <input type="submit" value="Edit Message" />
+    {% else %}
+    <br />
+    <input type="submit" value="Edit Room" />
+    {% endif %}
   </form>
 </div>
 {% endblock content %}
