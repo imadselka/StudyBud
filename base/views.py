@@ -73,8 +73,15 @@ def home(request):
         return render(request, "base/error.html")
 
     room_count = rooms.count()
+    # icontains is case insensitive
+    room_messages = Message.objects.filter(Q(room__topic__name__icontains=q))
 
-    context = {"rooms": rooms, "topics": topics, "room_count": room_count}
+    context = {
+        "rooms": rooms,
+        "topics": topics,
+        "room_count": room_count,
+        "room_messages": room_messages,
+    }
     return render(request, "base/home.html", context)
 
 
@@ -111,7 +118,7 @@ def createRoom(request):
             form.save()
             return redirect("home")
 
-    context = {"form": form}
+    context = {"form": form, "is_creating_room": True}
     return render(request, "base/room_form.html", context)
 
 
@@ -129,7 +136,7 @@ def updateRoom(request, pk):
             form.save()
             return redirect("home")
 
-    context = {"form": form}
+    context = {"form": form, "is_creating_room": False}
     return render(request, "base/room_form.html", context)
 
 
@@ -171,3 +178,26 @@ def deleteMessage(request, pk):
 
     context = {"obj": message}
     return render(request, "base/delete.html", context)
+
+
+from .forms import MessageForm  # Import the MessageForm class
+
+
+@login_required(login_url="login")
+def updateMessage(request, pk):
+    message = Message.objects.get(id=pk)
+    form = MessageForm(instance=message)  # Fix: Replace `Message` with `MessageForm`
+
+    if request.user != message.user:
+        return HttpResponse("You are not allowed here!")
+
+    if request.method == "POST":
+        form = MessageForm(
+            request.POST, instance=message
+        )  # Fix: Close the opening parenthesis after `form =` and remove the unnecessary opening parenthesis before `request.POST`
+        if form.is_valid():
+            form.save()
+            return redirect("home")
+
+    context = {"form": form, "is_updating_message": True}
+    return render(request, "base/room_form.html", context)
