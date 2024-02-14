@@ -15,55 +15,13 @@
   <body>
     {% extends 'main.html'%} {% block content %}
     <div class="home-container">
+      <div>{% include 'base/topics_component.html'%}</div>
+      <div>{% include 'base/room_component.html' %}</div>
       <div>
-        <h3>Browse Topcis</h3>
-        <hr />
-        <div>
-          <a href="{% url 'home' %}">All</a>
-        </div>
-        {% for topic in topics %}
-        <div>
-          <a href="{% url 'home' %}?q={{topic.name}}">{{topic.name}}</a>
-        </div>
-        {% endfor %}
+        {% include 'base/activity_component.html' %}
+        <div></div>
       </div>
-      <div>
-        <h1>Home Template</h1>
-        <div>
-          <h5>{{room_count}} -Room Available</h5>
-          <a href="{% url 'create-room' %}">Create Room</a>
-          <h1>Available Rooms:</h1>
-          <hr />
-          {% for room in rooms %}
-          <div>
-            {% if room.host == request.user %}
-            <a href="{% url 'update-room' room.id %}">Update Room</a><br />
-            <a href="{% url 'delete-room' room.id %}">Delete Room</a><br />
-            {% endif %}
-            <h3>@{{room.host.username}}</h3>
-            <p>id: {{ room.id }}</p>
-            <a href="{% url 'room' room.id %}"
-              ><h3>room name: {{ room.name }}</h3></a
-            >
-            <h3>Topic: {{room.topic.name}}</h3>
-            <hr />
-          </div>
-          {% endfor %}
-        </div>
-      </div>
-      <div>
-        <h3>Recent Activity</h3>
-        <hr />
-        {% for message in room_messages %}
-        <div>
-          <h3>@{{message.user.username}} {{message.created|timesince}}</h3>
-          <small>replied to: {{message.room}}</small>
-          <p>with :{{message}}</p>
-          <hr />
-          {% endfor %}
-        </div>
-      </div>
-      {% endblock %}
     </div>
+    {% endblock %}
   </body>
 </html>
