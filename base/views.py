@@ -1,13 +1,12 @@
 from django.shortcuts import render, redirect
 from django.http import HttpResponse
-from .models import Room, Topic
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.db.models import Q
-from django.contrib.auth.models import User
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.forms import UserCreationForm
-from .forms import RoomForm
+
+from base.forms import RoomForm
+from .models import Room, Topic, Message, User
 
 
 # Create your views here.
@@ -40,6 +39,9 @@ def loginPage(request):
 def logoutPage(request):
     logout(request)
     return redirect("home")
+
+
+from django.contrib.auth.forms import UserCreationForm  # Import the UserCreationForm
 
 
 def registerPage(request):
@@ -78,13 +80,19 @@ from .models import Message  # Import the Message model
 
 def room(request, pk):
     room = Room.objects.get(id=pk)
-    print("Room object:", room)
-    print("Attributes:", dir(room))  # Print all attributes of the room object
-    room_messages = room.message_set.all().order_by("-created")
+    room_messages = Message.objects.filter(room=room).order_by("-created")
     context = {
         "room": room,
         "room_messages": room_messages,
     }
+
+    if request.method == "POST":
+        message = Message.objects.create(
+            user=request.user,
+            room=room,
+            body=request.POST.get("body"),
+        )
+        return redirect("room", pk=room.pk)
     return render(request, "base/room.html", context)
 
 
