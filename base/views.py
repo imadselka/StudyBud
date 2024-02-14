@@ -7,6 +7,9 @@ from django.contrib.auth import authenticate, login, logout
 
 from base.forms import RoomForm
 from .models import Room, Topic, Message, User
+from django.http import HttpResponse
+from django.shortcuts import redirect, render
+from .models import Message
 
 
 # Create your views here.
@@ -81,9 +84,11 @@ from .models import Message  # Import the Message model
 def room(request, pk):
     room = Room.objects.get(id=pk)
     room_messages = Message.objects.filter(room=room).order_by("-created")
+    participants = room.participants.all()
     context = {
         "room": room,
         "room_messages": room_messages,
+        "participants": participants,
     }
 
     if request.method == "POST":
@@ -92,6 +97,7 @@ def room(request, pk):
             room=room,
             body=request.POST.get("body"),
         )
+        room.participants.add(request.user)
         return redirect("room", pk=room.pk)
     return render(request, "base/room.html", context)
 
@@ -139,4 +145,29 @@ def deleteRoom(request, pk):
         return redirect("home")
     # obj is the object to be deleted we use obj in html file
     context = {"obj": room}
+    return render(request, "base/delete.html", context)
+
+
+from django.http import HttpResponseRedirect  # Import the HttpResponseRedirect module
+
+
+from django.shortcuts import render, HttpResponseRedirect
+
+
+@login_required(login_url="login")
+def deleteMessage(request, pk):
+    message = Message.objects.get(id=pk)
+
+    if request.user != message.user:
+        return HttpResponseRedirect("You are not allowed here!")
+
+    if request.method == "POST":
+        referer = request.session.get("referer", "/")
+        message.delete()
+        return HttpResponseRedirect(referer)
+
+    # Store the referer URL in session
+    request.session["referer"] = request.META.get("HTTP_REFERER")
+
+    context = {"obj": message}
     return render(request, "base/delete.html", context)
