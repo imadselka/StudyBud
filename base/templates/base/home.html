@@ -16,11 +16,12 @@
     {% extends 'main.html'%} {% block content %}
     <div class="home-container">
       <div>{% include 'base/topics_component.html'%}</div>
-      <div>{% include 'base/room_component.html' %}</div>
       <div>
-        {% include 'base/activity_component.html' %}
-        <div></div>
+        <h5>{{room_count}} -Rooms Available</h5>
+        <a href="{% url 'create-room' %}">Create Room</a>
+        {% include 'base/feed_component.html' %}
       </div>
+      <div>{% include 'base/activity_component.html' %}</div>
     </div>
     {% endblock %}
   </body>
